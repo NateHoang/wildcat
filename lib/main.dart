@@ -31,7 +31,11 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   TimeOfDay selectedTime = TimeOfDay.now();
   DateTime selectedDate = DateTime.now();
+
   double amount = 3.0;
+  String mainText = "WILDCAT LOUNGE";
+  String subText = '"to WILDCAT LOUNGE"';
+  String bubbleText = "WL";
 
   Future<void> _selectTime(BuildContext context) async {
     final TimeOfDay? pickedTime = await showTimePicker(
@@ -88,11 +92,70 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
+  void _editText(BuildContext context) {
+    TextEditingController mainTextController = TextEditingController();
+    TextEditingController subTextController = TextEditingController();
+    TextEditingController bubbleTextController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Enter new text'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: mainTextController,
+              decoration: const InputDecoration(hintText: 'Enter main text'),
+            ),
+            TextField(
+              controller: subTextController,
+              decoration: const InputDecoration(hintText: 'Enter sub text'),
+            ),
+            TextField(
+              controller: bubbleTextController,
+              decoration: const InputDecoration(hintText: 'Enter bubble text'),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              setState(() {
+                mainText = mainTextController.text;
+                subText = subTextController.text;
+                bubbleText = bubbleTextController.text;
+              });
+              Navigator.of(context).pop();
+            },
+            child: const Text('OK'),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Payment Details'),
+        // make the title on the left side
+        automaticallyImplyLeading: false,
+        title: Row(
+          children: [
+            IconButton(
+                icon: const Icon(Icons.arrow_back),
+                //navigate to main.dart
+                onPressed: () {
+                  Navigator.pop(context);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const MyApp()),
+                  );
+                }),
+            const Text('Payment Details'),
+          ],
+        ),
       ),
       body: ListView(
         children: <Widget>[
@@ -103,24 +166,44 @@ class _MyHomePageState extends State<MyHomePage> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const CircleAvatar(
+                // const CircleAvatar(
+                //   backgroundColor: Colors.grey,
+                //   child: Text('WL'),
+                // ),
+                CircleAvatar(
                   backgroundColor: Colors.grey,
-                  child: Text('WL'),
+                  child: Text(bubbleText),
                 ),
                 const SizedBox(height: 8),
-                const Text(
-                  'WILDCAT LOUNGE',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                GestureDetector(
+                  onTap: () => _editText(context),
+                  child: Text(
+                    mainText,
+                    style: const TextStyle(
+                        fontSize: 24,
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold),
+                  ),
                 ),
-                const Text(
-                  '"to WILDCAT LOUNGE"',
-                  style: TextStyle(fontSize: 16, color: Colors.grey),
+                const SizedBox(height: 4),
+                GestureDetector(
+                  onTap: () => _editText(context),
+                  child: Text(
+                    subText,
+                    style: const TextStyle(
+                        fontSize: 16,
+                        color: Colors.grey,
+                        fontWeight: FontWeight.bold),
+                  ),
                 ),
                 const SizedBox(height: 8),
                 GestureDetector(
                   onTap: () => _editAmount(context),
                   child: Text(
-                    '- \$${amount.toStringAsFixed(0)}',
+                    //if there are decimals show the format as is, otherwise show as integer
+                    amount % 1 != 0
+                        ? '\$${amount.toStringAsFixed(2)}'
+                        : '\$${amount.toInt()}',
                     style: const TextStyle(
                         fontSize: 24,
                         color: Colors.red,
