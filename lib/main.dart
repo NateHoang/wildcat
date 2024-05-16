@@ -139,7 +139,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 const Text('Social Activity'),
                 const SizedBox(height: 4),
                 Image.asset(
-                  '/Users/nahoang/Desktop/Files/wildcat/wildcat/assets/images/social.png',
+                  // '/Users/nahoang/Desktop/Files/wildcat/wildcat/assets/images/social.png',
+                  'assets/images/social.png',
                   height: 23.0,
                 ),
               ],
@@ -148,7 +149,8 @@ class _MyHomePageState extends State<MyHomePage> {
           SizedBox(
             width: double.infinity,
             child: Image.asset(
-              '/Users/nahoang/Desktop/Files/wildcat/wildcat/assets/images/business.png',
+              // '/Users/nahoang/Desktop/Files/wildcat/wildcat/assets/images/business.png',
+              'assets/images/business.png',
               fit: BoxFit.cover,
             ),
           ),
@@ -164,7 +166,7 @@ class _MyHomePageState extends State<MyHomePage> {
               height: 23.0,
               width: 23.0,
               child: Image.asset(
-                '/Users/nahoang/Desktop/Files/wildcat/wildcat/assets/images/WF.png',
+                'assets/images/WF.png',
               ),
             ),
             subtitle: const Column(
