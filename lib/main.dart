@@ -36,6 +36,7 @@ class _MyHomePageState extends State<MyHomePage> {
   String mainText = "WILDCAT LOUNGE";
   String subText = '"to WILDCAT LOUNGE"';
   String bubbleText = "WL";
+  String sendText = "wildcat-15";
 
   Future<void> _selectTime(BuildContext context) async {
     final TimeOfDay? pickedTime = await showTimePicker(
@@ -96,6 +97,7 @@ class _MyHomePageState extends State<MyHomePage> {
     TextEditingController mainTextController = TextEditingController();
     TextEditingController subTextController = TextEditingController();
     TextEditingController bubbleTextController = TextEditingController();
+    TextEditingController sendTextController = TextEditingController();
 
     showDialog(
       context: context,
@@ -116,6 +118,10 @@ class _MyHomePageState extends State<MyHomePage> {
               controller: bubbleTextController,
               decoration: const InputDecoration(hintText: 'Enter bubble text'),
             ),
+            TextField(
+              controller: sendTextController,
+              decoration: const InputDecoration(hintText: 'Enter send text'),
+            ),
           ],
         ),
         actions: [
@@ -125,6 +131,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 mainText = mainTextController.text;
                 subText = subTextController.text;
                 bubbleText = bubbleTextController.text;
+                sendText = sendTextController.text;
               });
               Navigator.of(context).pop();
             },
@@ -272,13 +279,13 @@ class _MyHomePageState extends State<MyHomePage> {
               _selectTime(context);
             },
           ),
-          const ListTile(
-            title: Text('Paid to'),
+          ListTile(
+            title: const Text('Paid to'),
             subtitle: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('@wildcat-15'),
-                Text(
+                Text(sendText),
+                const Text(
                     'you paid for goods or services. You can get a full refund by texting this number below if you have any questions. Thank you for your usage of venmo.'),
               ],
             ),
