@@ -1,7 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'componenets/state_management.dart';
+import '../pages/wildcat.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => AppState(),
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -15,290 +23,287 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const MyHomePage(),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-  final String title;
+  const MyHomePage({super.key});
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  TimeOfDay selectedTime = TimeOfDay.now();
-  DateTime selectedDate = DateTime.now();
+  final TextEditingController mainTextController = TextEditingController();
+  final TextEditingController amountController = TextEditingController();
+  int _selectedIndex = 0;
 
-  double amount = 3.0;
-  String mainText = "WILDCAT LOUNGE";
-  String subText = '"to WILDCAT LOUNGE"';
-  String bubbleText = "WL";
-  String sendText = "wildcat-15";
+  @override
+  void initState() {
+    super.initState();
+    mainTextController.text = "Aaron Aplaon";
+    amountController.text = "20.00";
+  }
 
-  Future<void> _selectTime(BuildContext context) async {
-    final TimeOfDay? pickedTime = await showTimePicker(
-      context: context,
-      initialTime: selectedTime,
-    );
-
-    if (pickedTime != null && pickedTime != selectedTime) {
+  void _onItemTapped(int index) {
+    if (index == 2) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const WildcatPage(title: 'Wildcat Page'),
+        ),
+      );
+    } else {
       setState(() {
-        selectedTime = pickedTime;
+        _selectedIndex = index;
       });
     }
-  }
-
-  Future<void> _selectDate(BuildContext context) async {
-    final DateTime? pickedDate = await showDatePicker(
-      context: context,
-      initialDate: selectedDate,
-      firstDate: DateTime(2000),
-      lastDate: DateTime(2101),
-    );
-
-    if (pickedDate != null && pickedDate != selectedDate) {
-      setState(() {
-        selectedDate = pickedDate;
-      });
-    }
-  }
-
-  void _editAmount(BuildContext context) {
-    TextEditingController amountController = TextEditingController();
-
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Enter new amount'),
-        content: TextField(
-          controller: amountController,
-          keyboardType: TextInputType.number,
-          decoration: const InputDecoration(hintText: 'Enter amount'),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () {
-              setState(() {
-                amount = double.tryParse(amountController.text) ?? amount;
-              });
-              Navigator.of(context).pop();
-            },
-            child: const Text('OK'),
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _editText(BuildContext context) {
-    TextEditingController mainTextController = TextEditingController();
-    TextEditingController subTextController = TextEditingController();
-    TextEditingController bubbleTextController = TextEditingController();
-    TextEditingController sendTextController = TextEditingController();
-
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Enter new text'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextField(
-              controller: mainTextController,
-              decoration: const InputDecoration(hintText: 'Enter main text'),
-            ),
-            TextField(
-              controller: subTextController,
-              decoration: const InputDecoration(hintText: 'Enter sub text'),
-            ),
-            TextField(
-              controller: bubbleTextController,
-              decoration: const InputDecoration(hintText: 'Enter bubble text'),
-            ),
-            TextField(
-              controller: sendTextController,
-              decoration: const InputDecoration(hintText: 'Enter send text'),
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () {
-              setState(() {
-                mainText = mainTextController.text;
-                subText = subTextController.text;
-                bubbleText = bubbleTextController.text;
-                sendText = sendTextController.text;
-              });
-              Navigator.of(context).pop();
-            },
-            child: const Text('OK'),
-          ),
-        ],
-      ),
-    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        // make the title on the left side
         automaticallyImplyLeading: false,
-        title: Row(
+        title: const Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            IconButton(
-                icon: const Icon(Icons.arrow_back),
-                //navigate to main.dart
-                onPressed: () {
-                  Navigator.pop(context);
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const MyApp()),
-                  );
-                }),
-            const Text('Payment Details'),
+            Text('12:33', style: TextStyle(fontSize: 18)),
+            Row(
+              children: [
+                Icon(Icons.wifi),
+                SizedBox(width: 5),
+                Icon(Icons.signal_cellular_alt),
+                SizedBox(width: 5),
+                Icon(Icons.battery_full),
+              ],
+            ),
           ],
         ),
       ),
-      body: ListView(
-        children: <Widget>[
-          Container(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                // const CircleAvatar(
-                //   backgroundColor: Colors.grey,
-                //   child: Text('WL'),
-                // ),
-                CircleAvatar(
-                  backgroundColor: Colors.grey,
-                  child: Text(bubbleText),
+      body: Stack(
+        children: [
+          ListView(
+            padding: const EdgeInsets.symmetric(vertical: 16.0),
+            children: <Widget>[
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    Column(
+                      children: [
+                        Icon(Icons.search, size: 40),
+                        Text('Search'),
+                      ],
+                    ),
+                    Column(
+                      children: [
+                        Icon(Icons.qr_code_scanner, size: 40),
+                        Text('Scan'),
+                      ],
+                    ),
+                    Column(
+                      children: [
+                        CircleAvatar(
+                          backgroundImage: AssetImage('assets/images/Cap.png'),
+                          radius: 20,
+                        ),
+                        Text('Cappillen Lee', overflow: TextOverflow.ellipsis),
+                      ],
+                    ),
+                    Column(
+                      children: [
+                        CircleAvatar(
+                          backgroundImage:
+                              AssetImage('assets/images/Shawn.png'),
+                          radius: 20,
+                        ),
+                        Text('Shawn Li', overflow: TextOverflow.ellipsis),
+                      ],
+                    ),
+                    Column(
+                      children: [
+                        CircleAvatar(
+                          backgroundImage: AssetImage('assets/images/Ryan.png'),
+                          radius: 20,
+                        ),
+                        Text('Ryan Shi', overflow: TextOverflow.ellipsis),
+                      ],
+                    ),
+                  ],
                 ),
-                const SizedBox(height: 8),
-                GestureDetector(
-                  onTap: () => _editText(context),
-                  child: Text(
-                    mainText,
-                    style: const TextStyle(
-                        fontSize: 24,
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold),
-                  ),
-                ),
-                const SizedBox(height: 4),
-                GestureDetector(
-                  onTap: () => _editText(context),
-                  child: Text(
-                    subText,
-                    style: const TextStyle(
-                        fontSize: 16,
-                        color: Colors.grey,
-                        fontWeight: FontWeight.bold),
-                  ),
-                ),
-                const SizedBox(height: 8),
-                GestureDetector(
-                  onTap: () => _editAmount(context),
-                  child: Text(
-                    //if there are decimals show the format as is, otherwise show as integer
-                    amount % 1 != 0
-                        ? '\$${amount.toStringAsFixed(2)}'
-                        : '\$${amount.toInt()}',
-                    style: const TextStyle(
-                        fontSize: 24,
-                        color: Colors.red,
-                        fontWeight: FontWeight.bold),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const Divider(),
-          ListTile(
-            title: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Text('Social Activity'),
-                const SizedBox(height: 4),
-                Image.asset(
-                  // '/Users/nahoang/Desktop/Files/wildcat/wildcat/assets/images/social.png',
-                  'assets/images/social.png',
-                  height: 23.0,
-                ),
-              ],
-            ),
-          ),
-          SizedBox(
-            width: double.infinity,
-            child: Image.asset(
-              // '/Users/nahoang/Desktop/Files/wildcat/wildcat/assets/images/business.png',
-              'assets/images/business.png',
-              fit: BoxFit.cover,
-            ),
-          ),
-          const ListTile(
-            title: Text('Status'),
-            subtitle: Text('Complete'),
-          ),
-          const ListTile(
-            title: Text("Payment Method"),
-          ),
-          ListTile(
-            leading: SizedBox(
-              height: 23.0,
-              width: 23.0,
-              child: Image.asset(
-                'assets/images/WF.png',
               ),
-            ),
-            subtitle: const Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('WELLS FARGO BANK NA'),
-                Text('Personal Checking'),
-                Text('Bank •• 0459')
-              ],
-            ),
-          ),
-          ListTile(
-            title: const Text('Transaction details'),
-            subtitle: Text(
-              'Date: ${selectedDate.toLocal().toString().split(' ')[0]}, Time: ${selectedTime.format(context)}',
-            ),
-            trailing: const Icon(Icons.edit),
-            onTap: () async {
-              await _selectDate(context);
-              _selectTime(context);
-            },
-          ),
-          ListTile(
-            title: const Text('Paid to'),
-            subtitle: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(sendText),
-                const Text(
-                    'you paid for goods or services. You can get a full refund by texting this number below if you have any questions. Thank you for your usage of venmo.'),
-              ],
-            ),
-          ),
-          const ListTile(
-            title: Text('Type of transaction'),
-            subtitle: Text('Purchase'),
-          ),
-          const ListTile(
-            title: Text('Transaction ID'),
-            subtitle: Text('3978511740254646200'),
+              const SizedBox(height: 16),
+              Container(
+                color: Colors.grey[200],
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  children: [
+                    // add an image
+                    Image.asset('assets/images/Venmo.png'),
+                  ],
+                ),
+              ),
+              const Divider(),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const ListTile(
+                      leading: CircleAvatar(
+                          backgroundImage:
+                              AssetImage('assets/images/Johno.png')),
+                      title: Text('Johnson Chan paid Ryan Shi'),
+                      subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Now',
+                            textScaleFactor: .8,
+                          ),
+                          SizedBox(height: 10),
+                          Text('Foodies'),
+                          SizedBox(height: 10),
+                          Row(
+                            children: [
+                              Icon(Icons.favorite_border),
+                              SizedBox(width: 10),
+                              Icon(Icons.chat_bubble_outline),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                    const Divider(),
+                    Consumer<AppState>(
+                      builder: (context, appState, child) {
+                        return ListTile(
+                          leading: const CircleAvatar(
+                            backgroundImage:
+                                AssetImage('assets/images/Nathan.png'),
+                          ),
+                          title: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text('You paid ${appState.mainText}'),
+                              Text(
+                                '- \$${appState.amount}',
+                                style: const TextStyle(color: Colors.red),
+                              ),
+                            ],
+                          ),
+                          subtitle: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                'Now',
+                                textScaleFactor: .8,
+                              ),
+                              const SizedBox(height: 10),
+                              Text(appState.subText),
+                              const SizedBox(height: 10),
+                              const Row(
+                                children: [
+                                  Icon(Icons.favorite_border),
+                                  SizedBox(width: 10),
+                                  Icon(Icons.chat_bubble_outline),
+                                ],
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    ),
+                    const Divider(),
+                    const ListTile(
+                      leading: CircleAvatar(
+                        backgroundImage: AssetImage('assets/images/Cap.png'),
+                      ),
+                      title: Text('Cappillen Lee paid Shawn Li'),
+                      subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            '2hrs',
+                            textScaleFactor: .8,
+                          ),
+                          SizedBox(height: 10),
+                          Text('Korean Chippies because I\'m gay'),
+                          SizedBox(height: 10),
+                          Row(
+                            children: [
+                              Icon(Icons.favorite_border),
+                              SizedBox(width: 10),
+                              Icon(Icons.chat_bubble_outline),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                    const Divider(),
+                    const ListTile(
+                      leading: CircleAvatar(
+                        backgroundImage: AssetImage('assets/images/Ian.png'),
+                      ),
+                      title: Text('Ian Huang paid Nicky Dick'),
+                      subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            '5hrs',
+                            textScaleFactor: .8,
+                          ),
+                          SizedBox(height: 10),
+                          Text('Pookie slappies'),
+                          SizedBox(height: 10),
+                          Row(
+                            children: [
+                              Icon(Icons.favorite_border),
+                              SizedBox(width: 10),
+                              Icon(Icons.chat_bubble_outline),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
         ],
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.qr_code_scanner),
+            label: 'Scan',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.account_balance_wallet),
+            label: 'Wildcat',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.notifications),
+            label: 'Notifications',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: 'Profile',
+          ),
+        ],
+        currentIndex: _selectedIndex,
+        selectedItemColor: Colors.blue[900],
+        unselectedItemColor: Colors.blue,
+        onTap: _onItemTapped,
       ),
     );
   }
